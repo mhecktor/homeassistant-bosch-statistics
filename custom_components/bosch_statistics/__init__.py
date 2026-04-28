@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import timedelta
 
 from aiohttp import ClientError
@@ -10,6 +11,8 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import MyRestApiClient
 from .const import DOMAIN, PLATFORMS
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -24,7 +27,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     coordinator = DataUpdateCoordinator(
         hass,
-        logger=None,
+        logger=_LOGGER,
         name=DOMAIN,
         update_method=async_update_data,
         update_interval=timedelta(minutes=5),
