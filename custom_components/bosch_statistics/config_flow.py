@@ -100,51 +100,54 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     ):
         errors = {}
         try:
-            if self.data is not None:
-                session = aiohttp.ClientSession()
+            logging.info("Attempting to refresh token with provided credentials")
+            async with aiohttp.ClientSession() as session:
                 refresh_token = self.data[CONF_REFRESH_TOKEN]
+                logging.info("Refreshing token using refresh token: %s", refresh_token)
                 token_data = await self.async_refresh_token(
                     session=session,
                     base_url=self.data[CONF_BASE_URL],
                     client_id=self.data[CONF_CLIENT_ID],
                     refresh_token=refresh_token,
                 )
-                access_token = token_data["access_token"]
-                new_refresh_token = token_data.get(
-                    "refresh_token",
-                    refresh_token,
+                logging.info(
+                    "Token refresh successful, received token data: %s", token_data
                 )
-                expires_in = token_data.get("expires_in", 3600)
-
-                new_data = {
-                    **self.data,
-                    CONF_ACCESS_TOKEN: access_token,
-                    CONF_REFRESH_TOKEN: new_refresh_token,
-                    CONF_EXPIRES_AT: time.time() + expires_in,
-                }
-
-                await self.async_set_unique_id(self._base_data[CONF_CLIENT_ID])
-                self._abort_if_unique_id_configured()
-
-                return self.async_create_entry(
-                    title="Bosch Statistics",
-                    data=self.data,
-                )
-
-        except CannotConnect:
-            errors["base"] = "cannot_connect"
-        except InvalidAuth:
-            errors["base"] = "invalid_auth"
-        except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Unexpected exception")
-            errors["base"] = "unknown"
-        else:
-            return self.async_show_form(
-                step_id="token",
-                data_schema=vol.Schema(
-                    {
-                        vol.Required(CONF_REFRESH_TOKEN): str,
-                    }
-                ),
-                errors=errors,
+            access_token = token_data["access_token"]
+            new_refresh_token = token_data.get(
+                "refresh_token",
+                refresh_token,
             )
+            expires_in = token_data.get("expires_in", 3600)
+            new_data = {
+                **self.data,
+                CONF_ACCESS_TOKEN: access_token,
+                CONF_REFRESH_TOKEN: new_refresh_token,
+                CONF_EXPIRES_AT: time.time() + expires_in,
+            }
+            await self.async_set_unique_id(self.data[CONF_CLIENT_ID])
+            self._abort_if_unique_id_configured()
+            return self.async_create_entry(
+                title="Bosch Statistics",
+                data=self.data,
+            )
+
+        except CannotConnect as cannot_connect:
+            errors["base"] = "cannot_connect"
+            _LOGGER.error("Cannot connect", cannot_connect, exc_info=True)
+        except InvalidAuth as invalid_auth:
+            errors["base"] = "invalid_auth"
+            _LOGGER.error(invalid_auth, stack_info=True, exc_info=True)
+        except Exception as e:  # pylint: disable=broad-except
+            _LOGGER.error(e, stack_info=True, exc_info=True)
+            errors["base"] = "unknown"
+
+        return self.async_show_form(
+            step_id="token",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_REFRESH_TOKEN): str,
+                }
+            ),
+            errors=errors,
+        )

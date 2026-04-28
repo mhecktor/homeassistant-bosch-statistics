@@ -1,0 +1,14 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect Bosch Dishwasher",
+        "description": "Please enter your API credentials for {api_name}.",
+      },
+      "token": {
+        "title": "Token Authentication",
+        "description": "Token successfully fetched",
+        },
+    }
+  }
+}
