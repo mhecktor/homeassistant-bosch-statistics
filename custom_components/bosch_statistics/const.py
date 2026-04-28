@@ -1,4 +1,4 @@
-DOMAIN = "bosch_dishwasher"
+DOMAIN = "bosch_statistics"
 
 CONF_APPLIANCE_ID = "appliance_id"
 CONF_REFRESH_TOKEN = "refresh_token"

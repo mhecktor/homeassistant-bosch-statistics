@@ -1,5 +1,5 @@
 {
-  "domain": "bosch_dishwasher",
+  "domain": "bosch_statistics",
   "name": "Bosch Dishwasher Statistics",
   "codeowners": [],
   "config_flow": true,
