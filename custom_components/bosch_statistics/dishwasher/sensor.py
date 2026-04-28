@@ -60,7 +60,7 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
     """Sensor for dishwasher energy usage."""
 
     _attr_icon = "mdi:energy"
-    _attr_n_attr_native_unit_of_measurement = UnitOfEnergy["WATT_HOURS"]
+    _attr_native_unit_of_measurement = UnitOfEnergy["WATT_HOUR"]
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_device_class = SensorDeviceClass.ENERGY
 
