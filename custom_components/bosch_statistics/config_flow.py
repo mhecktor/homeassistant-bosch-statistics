@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any
-
+import voluptuous as vol
 import aiohttp
 from homeassistant import config_entries
 
