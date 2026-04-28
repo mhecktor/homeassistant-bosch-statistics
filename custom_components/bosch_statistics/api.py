@@ -91,9 +91,7 @@ class BoschApiClient:
             data=new_data,
         )
 
-    async def async_get_home_appliances(
-        self, user_input: dict[str, Any]
-    ) -> list[dict[str, Any]]:
+    async def async_get_home_appliances(self) -> list[dict[str, Any]]:
         """Scan for devices using the provided API credentials."""
         # This is a placeholder implementation. You would replace this with actual
         # logic to query the API and return a list of devices.
