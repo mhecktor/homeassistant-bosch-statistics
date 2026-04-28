@@ -26,6 +26,7 @@ _LOGGER = logging.getLogger(__name__)
 
 @dataclass
 class BoschHomeAppliance:
+    connected: bool
     brand: str
     type: str
     ha_id: str
@@ -126,7 +127,18 @@ class BoschApiClient:
         )  # Ensure token is valid before scanning
 
         return [
-            BoschHomeAppliance(**device)
+            BoschHomeAppliance(
+                connected=device.get("connected", False),
+                brand=device.get("brand", ""),
+                type=device.get("type", ""),
+                ha_id=device.get("haId", ""),
+                ddfversion=device.get("ddfversion", 0),
+                demo=device.get("demo", False),
+                enumber=device.get("enumber", ""),
+                name=device.get("name", ""),
+                serialnumber=device.get("serialnumber", ""),
+                vib=device.get("vib", ""),
+            )
             for device in devices.get("data", {}).get("homeappliances", [])
         ]
 
