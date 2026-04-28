@@ -30,7 +30,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         devices = await api.async_get_home_appliances()
     except Exception as err:
-        _LOGGER.error("Error fetching home appliances: %s", err)
+        _LOGGER.error(err, exc_info=True, stack_info=True)
         raise UpdateFailed("Failed to fetch home appliances") from err
 
     coordinators: list[BoschDataUpdateCoordinator] = []
