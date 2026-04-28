@@ -15,7 +15,7 @@ from .const import (
     CONF_EXPIRES_AT,
     CONF_REFRESH_TOKEN,
 )
-from .utils import _LOGGER, async_refresh_token
+from .utils import async_refresh_token
 
 __all__ = ["BoschApiClient"]
 
@@ -35,20 +35,6 @@ class BoschApiClient:
     def data(self) -> MappingProxyType[str, Any]:
         return self.entry.data
 
-    async def async_get_home_appliances(self) -> list[dict[str, Any]]:
-        url = f"{self.entry.data[CONF_BASE_URL]}/api/homeappliances"
-
-        headers = {
-            "Authorization": f"Bearer {self.entry.data[CONF_ACCESS_TOKEN]}",
-            "Accept": "application/json",
-        }
-
-        async with self.session.get(url, headers=headers) as response:
-            response.raise_for_status()
-            data = await response.json()
-        _LOGGER.info("Received home appliances data: %s", data)
-        return data.get("data", {}).get("homeappliances", [])
-
     async def async_request(
         self,
         method: str,
@@ -58,13 +44,15 @@ class BoschApiClient:
         await self.async_ensure_token_valid()
 
         headers = kwargs.pop("headers", {})
-        headers["Authorization"] = f"Bearer {self.data[CONF_ACCESS_TOKEN]}"
+        headers["Authorization"] = f"Bearer {self.entry.data[CONF_ACCESS_TOKEN]}"
 
         url = f"{self.data[CONF_BASE_URL].rstrip('/')}/{path.lstrip('/')}"
         async with self.session.request(method, url, headers=headers, **kwargs) as resp:
             if resp.status == 401:
                 await self.async_refresh_token()
-                headers["Authorization"] = f"Bearer {self.data[CONF_ACCESS_TOKEN]}"
+                headers["Authorization"] = (
+                    f"Bearer {self.entry.data[CONF_ACCESS_TOKEN]}"
+                )
 
                 async with self.session.request(
                     method, url, headers=headers, **kwargs
@@ -103,7 +91,7 @@ class BoschApiClient:
             data=new_data,
         )
 
-    async def async_get_devices(
+    async def async_get_home_appliances(
         self, user_input: dict[str, Any]
     ) -> list[dict[str, Any]]:
         """Scan for devices using the provided API credentials."""

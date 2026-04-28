@@ -26,12 +26,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_get_clientsession(hass)
     api = BoschApiClient(hass, session, entry)
 
-    async def async_update_data():
-        try:
-            return await api.async_get_status()
-        except ClientError as err:
-            raise UpdateFailed(f"API request failed: {err}") from err
-
     coordinator = DataUpdateCoordinator(
         hass,
         logger=_LOGGER,
