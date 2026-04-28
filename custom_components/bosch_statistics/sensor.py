@@ -18,11 +18,12 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator = entry.runtime_data.coordinator
-    _LOGGER.debug("Setting up sensor platform with coordinator: %s", coordinator)
-    appliances = coordinator.data or []
+    # coordinator = entry.runtime_data.coordinator
 
-    async_add_entities(BoschHomeApplianceSensor(appliance) for appliance in appliances)
+    _LOGGER.warn("Setting up sensor platform with coordinator", extra=entry)
+    # appliances = coordinator.data or []
+
+    # async_add_entities(BoschHomeApplianceSensor(appliance) for appliance in appliances)
 
 
 class BoschHomeApplianceSensor(SensorEntity):
