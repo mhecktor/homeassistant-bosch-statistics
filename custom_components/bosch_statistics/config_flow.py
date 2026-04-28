@@ -27,7 +27,7 @@ class CannotConnect(Exception):
 class InvalidAuth(Exception):
     """Error to indicate invalid auth."""
 
-     def __init__(self, message: str | None = None) -> None:
+    def __init__(self, message: str | None = None) -> None:
         self.message = message or "Invalid authentication"
         super().__init__(self.message)
 
@@ -63,7 +63,7 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if response.status in (400, 401, 403):
                     response_message = await response.text()
                     _LOGGER.error(
-                            "Invalid auth response [%s]: %s",
+                        "Invalid auth response [%s]: %s",
                         response.status,
                         response_message,
                     )
