@@ -39,19 +39,17 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         session: aiohttp.ClientSession,
         base_url: str,
         client_id: str,
-        client_secret: str,
         refresh_token: str,
     ) -> dict[str, Any]:
         """Refresh an OAuth access token."""
 
-        url = f"{base_url.rstrip('/')}/oauth/token"
+        url = f"{base_url.rstrip('/')}/security/oauth/token"
 
         payload = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
             "client_id": client_id,
             "hc_context": "WebViewVM_getAccessToken|registered",
-            "grant_type": "refresh_token",
         }
 
         try:
@@ -109,7 +107,6 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     session=session,
                     base_url=self.data[CONF_BASE_URL],
                     client_id=self.data[CONF_CLIENT_ID],
-                    client_secret=self.data[CONF_CLIENT_SECRET],
                     refresh_token=refresh_token,
                 )
                 access_token = token_data["access_token"]
