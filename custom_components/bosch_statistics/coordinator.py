@@ -31,7 +31,7 @@ class BoschDataUpdateCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             config_entry=config_entry,
             always_update=False,
-            update_interval=timedelta(minutes=5),
+            update_interval=timedelta(seconds=30),
         )
         self.device = device
         self.api = api

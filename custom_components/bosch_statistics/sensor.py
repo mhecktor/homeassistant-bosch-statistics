@@ -49,9 +49,5 @@ async def async_setup_entry(
         for device_class, entity in device_handlers.items():
             if device_type == device_class:
                 entities.extend(entity)
-                _LOGGER.warning(
-                    "Adding %d sensors for device %s",
-                    coordinator.device.ha_id,
-                )
 
     async_add_entities(entities)
