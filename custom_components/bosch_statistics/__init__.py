@@ -23,6 +23,13 @@ class BoschRuntimeData:
     coordinator: DataUpdateCoordinator[list[dict]]
 
 
+async def async_setup(hass, config):
+    hass.states.async_set(f"{DOMAIN}.interval", 30)
+
+    # Return boolean to indicate that initialization was successful.
+    return True
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_get_clientsession(hass)
     api = BoschApiClient(hass, session, entry)
