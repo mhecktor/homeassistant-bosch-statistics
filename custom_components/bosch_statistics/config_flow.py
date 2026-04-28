@@ -1,16 +1,23 @@
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any
-import voluptuous as vol
+
 import aiohttp
+import voluptuous as vol
 from homeassistant import config_entries
 
-_LOGGER = logging.getLogger(__name__)
-
 from .const import (
+    CONF_ACCESS_TOKEN,
+    CONF_BASE_URL,
+    CONF_CLIENT_ID,
+    CONF_EXPIRES_AT,
+    CONF_REFRESH_TOKEN,
     DOMAIN,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class CannotConnect(Exception):
@@ -77,21 +84,21 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         errors = {}
 
-         return self.async_show_form(
+        return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_BASE_URL): str,
                     vol.Required(CONF_CLIENT_ID): str,
-                    vol.Required(CONF_CLIENT_SECRET): str,
+                    vol.Required(CONF_REFRESH_TOKEN): str,
                 }
             ),
             errors={},
         )
-        
+
     async def async_step_token(
         self,
-        user_input: dict[str, Any],
+        user_input: dict[str, Any] | None = None,
     ):
         errors = {}
         try:
@@ -105,6 +112,28 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     client_secret=self.data[CONF_CLIENT_SECRET],
                     refresh_token=refresh_token,
                 )
+                access_token = token_data["access_token"]
+                new_refresh_token = token_data.get(
+                    "refresh_token",
+                    refresh_token,
+                )
+                expires_in = token_data.get("expires_in", 3600)
+
+                new_data = {
+                    **self.data,
+                    CONF_ACCESS_TOKEN: access_token,
+                    CONF_REFRESH_TOKEN: new_refresh_token,
+                    CONF_EXPIRES_AT: time.time() + expires_in,
+                }
+
+                await self.async_set_unique_id(self._base_data[CONF_CLIENT_ID])
+                self._abort_if_unique_id_configured()
+
+                return self.async_create_entry(
+                    title="Bosch Statistics",
+                    data=self.data,
+                )
+
         except CannotConnect:
             errors["base"] = "cannot_connect"
         except InvalidAuth:
@@ -113,35 +142,12 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.exception("Unexpected exception")
             errors["base"] = "unknown"
         else:
-            access_token = token_data["access_token"]
-            new_refresh_token = token_data.get(
-                "refresh_token",
-                refresh_token,
+            return self.async_show_form(
+                step_id="token",
+                data_schema=vol.Schema(
+                    {
+                        vol.Required(CONF_REFRESH_TOKEN): str,
+                    }
+                ),
+                errors=errors,
             )
-            expires_in = token_data.get("expires_in", 3600)
-
-            new_data = {
-                **self.data,
-                CONF_ACCESS_TOKEN: access_token,
-                CONF_REFRESH_TOKEN: new_refresh_token,
-                CONF_EXPIRES_AT: time.time() + expires_in,
-            }
-
-            await self.async_set_unique_id(self._base_data[CONF_CLIENT_ID])
-            self._abort_if_unique_id_configured()
-
-            return self.async_create_entry(
-                title="My REST API",
-                data=data,
-            )
-        return self.async_show_form(
-            step_id="token",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_REFRESH_TOKEN): str,
-                }
-            ),
-            errors=errors,
-        )
-
-           
