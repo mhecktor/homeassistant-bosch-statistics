@@ -101,7 +101,7 @@ class BoschApiClient:
 
         _LOGGER.warn(
             "Current API credentials:",
-            json.dumps({"data": self.data, "user_input": user_input}, indent=4),
+            json.dumps({"data": self.entry.data, "user_input": user_input}, indent=4),
         )
         # This is a placeholder implementation. You would replace this with actual
         # logic to query the API and return a list of devices.
