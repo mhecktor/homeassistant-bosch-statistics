@@ -27,6 +27,10 @@ class CannotConnect(Exception):
 class InvalidAuth(Exception):
     """Error to indicate invalid auth."""
 
+     def __init__(self, message: str | None = None) -> None:
+        self.message = message or "Invalid authentication"
+        super().__init__(self.message)
+
 
 class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
@@ -52,10 +56,18 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "hc_context": "WebViewVM_getAccessToken|registered",
         }
 
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+
         try:
-            async with session.post(url, data=payload) as response:
+            async with session.post(url, data=payload, headers=headers) as response:
                 if response.status in (400, 401, 403):
-                    raise InvalidAuth
+                    response_message = await response.text()
+                    _LOGGER.error(
+                            "Invalid auth response [%s]: %s",
+                        response.status,
+                        response_message,
+                    )
+                    raise InvalidAuth(response_message)
 
                 response.raise_for_status()
                 token_data = await response.json()
