@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import logging
 import time
+from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any
 
@@ -15,9 +17,24 @@ from .const import (
     CONF_EXPIRES_AT,
     CONF_REFRESH_TOKEN,
 )
-from .utils import _LOGGER, async_refresh_token
+from .utils import async_refresh_token
 
 __all__ = ["BoschApiClient"]
+
+_LOGGER = logging.getLogger(__name__)
+
+
+@dataclass
+class BoschHomeAppliance:
+    brand: str
+    type: str
+    ha_id: str
+    ddfversion: int
+    demo: bool
+    enumber: str
+    name: str
+    serialnumber: str
+    vib: str
 
 
 class BoschApiClient:
@@ -94,7 +111,7 @@ class BoschApiClient:
     async def async_get_home_appliances(
         self,
         user_input: dict[str, Any] | None = None,
-    ) -> list[dict[str, Any]]:
+    ) -> list[BoschHomeAppliance]:
         """Scan for devices using the provided API credentials."""
         _LOGGER.warn("Scanning for devices with current API credentials")
 
@@ -108,7 +125,10 @@ class BoschApiClient:
             "GET", "/api/homeappliances"
         )  # Ensure token is valid before scanning
 
-        return devices.get("data", {}).get("homeappliances", [])
+        return [
+            BoschHomeAppliance(**device)
+            for device in devices.get("data", {}).get("homeappliances", [])
+        ]
 
     async def async_get_status(self) -> dict[str, Any]:
         return await self.async_request("GET", "/api/status")

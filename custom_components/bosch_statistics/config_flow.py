@@ -153,29 +153,6 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_scan_devices(
-        self, user_input: dict[str, Any]
-    ) -> list[dict[str, Any]]:
-        """Scan for devices using the provided API credentials."""
-        # This is a placeholder implementation. You would replace this with actual
-        # logic to query the API and return a list of devices.
-        url = f"{self.data[CONF_BASE_URL].rstrip('/')}/api/homeappliances"
-
-        headers = {
-            "Authorization": f"Bearer {self.data[CONF_ACCESS_TOKEN]}",
-            "Accept": "application/json",
-        }
-
-        with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(url, headers=headers) as response:
-                    response.raise_for_status()
-                    devices = await response.json()
-                    return devices.get("data", {}).get("homeappliances", [])
-            except aiohttp.ClientError as err:
-                _LOGGER.error("Error scanning for devices: %s", err, exc_info=True)
-                raise CannotConnect from err
-
         return [
             {"id": "device_1", "name": "Device 1"},
             {"id": "device_2", "name": "Device 2"},
