@@ -16,20 +16,9 @@ from .const import (
     CONF_REFRESH_TOKEN,
     DOMAIN,
 )
+from .utils import CannotConnect, InvalidAuth, async_refresh_token
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class CannotConnect(Exception):
-    """Error to indicate we cannot connect."""
-
-
-class InvalidAuth(Exception):
-    """Error to indicate invalid auth."""
-
-    def __init__(self, message: str | None = None) -> None:
-        self.message = message or "Invalid authentication"
-        super().__init__(self.message)
 
 
 class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -38,49 +27,49 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         self.data: dict[str, Any] = {}
 
-    async def async_refresh_token(
-        self,
-        session: aiohttp.ClientSession,
-        base_url: str,
-        client_id: str,
-        refresh_token: str,
-    ) -> dict[str, Any]:
-        """Refresh an OAuth access token."""
-
-        url = f"{base_url.rstrip('/')}/security/oauth/token"
-
-        payload = {
-            "grant_type": "refresh_token",
-            "refresh_token": refresh_token,
-            "client_id": client_id,
-            "hc_context": "WebViewVM_getAccessToken|registered",
-        }
-
-        headers = {"Content-Type": "application/x-www-form-urlencoded"}
-
-        try:
-            async with session.post(url, data=payload, headers=headers) as response:
-                if response.status in (400, 401, 403):
-                    response_message = await response.text()
-                    _LOGGER.error(
-                        "Invalid auth response [%s]: %s",
-                        response.status,
-                        response_message,
-                    )
-                    raise InvalidAuth(response_message)
-
-                response.raise_for_status()
-                token_data = await response.json()
-
-        except InvalidAuth:
-            raise
-        except aiohttp.ClientError as err:
-            raise CannotConnect from err
-
-        if "access_token" not in token_data:
-            raise InvalidAuth
-
-        return token_data
+    # async def async_refresh_token(
+    #     self,
+    #     session: aiohttp.ClientSession,
+    #     base_url: str,
+    #     client_id: str,
+    #     refresh_token: str,
+    # ) -> dict[str, Any]:
+    #     """Refresh an OAuth access token."""
+    #
+    #     url = f"{base_url.rstrip('/')}/security/oauth/token"
+    #
+    #     payload = {
+    #         "grant_type": "refresh_token",
+    #         "refresh_token": refresh_token,
+    #         "client_id": client_id,
+    #         "hc_context": "WebViewVM_getAccessToken|registered",
+    #     }
+    #
+    #     headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    #
+    #     try:
+    #         async with session.post(url, data=payload, headers=headers) as response:
+    #             if response.status in (400, 401, 403):
+    #                 response_message = await response.text()
+    #                 _LOGGER.error(
+    #                     "Invalid auth response [%s]: %s",
+    #                     response.status,
+    #                     response_message,
+    #                 )
+    #                 raise InvalidAuth(response_message)
+    #
+    #             response.raise_for_status()
+    #             token_data = await response.json()
+    #
+    #     except InvalidAuth:
+    #         raise
+    #     except aiohttp.ClientError as err:
+    #         raise CannotConnect from err
+    #
+    #     if "access_token" not in token_data:
+    #         raise InvalidAuth
+    #
+    #     return token_data
 
     async def async_step_user(
         self,
@@ -116,7 +105,7 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             async with aiohttp.ClientSession() as session:
                 refresh_token = self.data[CONF_REFRESH_TOKEN]
                 logging.info("Refreshing token using refresh token: %s", refresh_token)
-                token_data = await self.async_refresh_token(
+                token_data = await async_refresh_token(
                     session=session,
                     base_url=self.data[CONF_BASE_URL],
                     client_id=self.data[CONF_CLIENT_ID],
@@ -163,3 +152,31 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
         )
+
+    async def async_scan_devices(
+        self, user_input: dict[str, Any]
+    ) -> list[dict[str, Any]]:
+        """Scan for devices using the provided API credentials."""
+        # This is a placeholder implementation. You would replace this with actual
+        # logic to query the API and return a list of devices.
+        url = f"{self.data[CONF_BASE_URL].rstrip('/')}/api/homeappliances"
+
+        headers = {
+            "Authorization": f"Bearer {self.data[CONF_ACCESS_TOKEN]}",
+            "Accept": "application/json",
+        }
+
+        with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(url, headers=headers) as response:
+                    response.raise_for_status()
+                    devices = await response.json()
+                    return devices.get("data", {}).get("homeappliances", [])
+            except aiohttp.ClientError as err:
+                _LOGGER.error("Error scanning for devices: %s", err, exc_info=True)
+                raise CannotConnect from err
+
+        return [
+            {"id": "device_1", "name": "Device 1"},
+            {"id": "device_2", "name": "Device 2"},
+        ]

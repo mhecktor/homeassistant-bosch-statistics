@@ -1,34 +1,46 @@
 from __future__ import annotations
 
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from typing import Any
 
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from . import BoschConfigEntry
 from .const import DOMAIN
+from .utils import _LOGGER
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: BoschConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    async_add_entities([MyRestApiStatusSensor(coordinator, entry)])
+    coordinator = entry.runtime_data.coordinator
+    _LOGGER.debug("Setting up sensor platform with coordinator: %s", coordinator)
+    appliances = coordinator.data or []
+
+    async_add_entities(BoschHomeApplianceSensor(appliance) for appliance in appliances)
 
 
-class MyRestApiStatusSensor(CoordinatorEntity, SensorEntity):
-    def __init__(self, coordinator, entry: ConfigEntry) -> None:
-        super().__init__(coordinator)
-        self._entry = entry
-        self._attr_unique_id = f"{entry.entry_id}_status"
-        self._attr_name = "My REST API Status"
+class BoschHomeApplianceSensor(SensorEntity):
+    def __init__(self, appliance: dict[str, Any]) -> None:
+        self._appliance = appliance
 
-    @property
-    def native_value(self):
-        return self.coordinator.data.get("status")
+        appliance_id = appliance["haId"]
+        name = appliance.get("name") or appliance.get("brand") or "Bosch appliance"
 
-    @property
-    def extra_state_attributes(self):
-        return self.coordinator.data
+        self._attr_unique_id = f"{DOMAIN}_{appliance_id}"
+        self._attr_name = name
+
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, appliance_id)},
+            name=name,
+            manufacturer=appliance.get("brand", "Bosch"),
+            model=appliance.get("type"),
+            serial_number=appliance.get("vib"),
+        )
+
+    # def native_value(self) -> str:
+    #     return self._appliance.get("connected", "unknown")

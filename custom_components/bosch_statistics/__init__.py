@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from datetime import timedelta
 
 from aiohttp import ClientError
@@ -9,15 +10,21 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import MyRestApiClient
+from .api import BoschApiClient
 from .const import DOMAIN, PLATFORMS
 
 _LOGGER = logging.getLogger(__name__)
 
 
+@dataclass
+class BoschRuntimeData:
+    client: BoschApiClient
+    coordinator: DataUpdateCoordinator[list[dict]]
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_get_clientsession(hass)
-    api = MyRestApiClient(hass, session, entry)
+    api = BoschApiClient(hass, session, entry)
 
     async def async_update_data():
         try:
@@ -29,7 +36,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass,
         logger=_LOGGER,
         name=DOMAIN,
-        update_method=async_update_data,
+        # update_method=async_update_data,
+        update_method=api.async_get_home_appliances,
         update_interval=timedelta(minutes=5),
     )
 

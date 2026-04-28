@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from types import MappingProxyType
 from typing import Any
 
 import aiohttp
@@ -11,13 +12,15 @@ from .const import (
     CONF_ACCESS_TOKEN,
     CONF_BASE_URL,
     CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
     CONF_EXPIRES_AT,
     CONF_REFRESH_TOKEN,
 )
+from .utils import _LOGGER, async_refresh_token
+
+__all__ = ["BoschApiClient"]
 
 
-class MyRestApiClient:
+class BoschApiClient:
     def __init__(
         self,
         hass: HomeAssistant,
@@ -29,8 +32,22 @@ class MyRestApiClient:
         self.entry = entry
 
     @property
-    def data(self) -> dict[str, Any]:
+    def data(self) -> MappingProxyType[str, Any]:
         return self.entry.data
+
+    async def async_get_home_appliances(self) -> list[dict[str, Any]]:
+        url = f"{self.entry.data[CONF_BASE_URL]}/api/homeappliances"
+
+        headers = {
+            "Authorization": f"Bearer {self.entry.data[CONF_ACCESS_TOKEN]}",
+            "Accept": "application/json",
+        }
+
+        async with self.session.get(url, headers=headers) as response:
+            response.raise_for_status()
+            data = await response.json()
+        _LOGGER.info("Received home appliances data: %s", data)
+        return data.get("data", {}).get("homeappliances", [])
 
     async def async_request(
         self,
@@ -66,18 +83,12 @@ class MyRestApiClient:
             await self.async_refresh_token()
 
     async def async_refresh_token(self) -> None:
-        url = f"{self.data[CONF_BASE_URL].rstrip('/')}/oauth/token"
-
-        payload = {
-            "grant_type": "refresh_token",
-            "refresh_token": self.data[CONF_REFRESH_TOKEN],
-            "client_id": self.data[CONF_CLIENT_ID],
-            "client_secret": self.data[CONF_CLIENT_SECRET],
-        }
-
-        async with self.session.post(url, data=payload) as resp:
-            resp.raise_for_status()
-            token_data = await resp.json()
+        token_data = await async_refresh_token(
+            session=self.session,
+            base_url=self.data[CONF_BASE_URL],
+            client_id=self.data[CONF_CLIENT_ID],
+            refresh_token=self.data[CONF_REFRESH_TOKEN],
+        )
 
         new_data = dict(self.entry.data)
         new_data[CONF_ACCESS_TOKEN] = token_data["access_token"]
@@ -91,6 +102,18 @@ class MyRestApiClient:
             self.entry,
             data=new_data,
         )
+
+    async def async_get_devices(
+        self, user_input: dict[str, Any]
+    ) -> list[dict[str, Any]]:
+        """Scan for devices using the provided API credentials."""
+        # This is a placeholder implementation. You would replace this with actual
+        # logic to query the API and return a list of devices.
+        devices = await self.async_request(
+            "GET", "/api/homeappliances"
+        )  # Ensure token is valid before scanning
+
+        return devices.get("data", {}).get("homeappliances", [])
 
     async def async_get_status(self) -> dict[str, Any]:
         return await self.async_request("GET", "/api/status")
