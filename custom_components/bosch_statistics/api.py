@@ -96,7 +96,7 @@ class BoschApiClient:
         user_input: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
         """Scan for devices using the provided API credentials."""
-        _LOGGER.warng("Scanning for devices with current API credentials")
+        _LOGGER.warn("Scanning for devices with current API credentials")
         _LOGGER.warn("Current API credentials:", self.data, user_input)
         # This is a placeholder implementation. You would replace this with actual
         # logic to query the API and return a list of devices.
