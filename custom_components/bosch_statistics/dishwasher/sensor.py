@@ -3,13 +3,15 @@ from homeassistant.components.sensor import (
     SensorEntity,
 )
 from homeassistant.components.sensor.const import SensorStateClass
-from homeassistant.const import UnitOfVolume
+from homeassistant.const import UnitOfEnergy, UnitOfVolume
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from custom_components.bosch_statistics.coordinator import BoschDataUpdateCoordinator
 
 from ..const import DOMAIN
+
+__all__ = ["BoschDishwasherWaterSensor", "BoschDishwasherEnergySensor"]
 
 
 class BoschHomeApplianceBaseEntity(CoordinatorEntity[BoschDataUpdateCoordinator]):
@@ -53,6 +55,17 @@ class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
     ) -> None:
         super().__init__(coordinator, feature_id="water_usage")
 
-    # @property
-    # def native_value(self) -> Any:
-    #     return self.entity_description.value_fn(self.coordinator.device)
+
+class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
+    """Sensor for dishwasher energy usage."""
+
+    _attr_icon = "mdi:energy"
+    _attr_n_attr_native_unit_of_measurement = UnitOfEnergy["WATT_HOURS"]
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(
+        self,
+        coordinator: BoschDataUpdateCoordinator,
+    ) -> None:
+        super().__init__(coordinator, feature_id="energy_consumption")

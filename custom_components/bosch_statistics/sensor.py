@@ -1,21 +1,12 @@
 from __future__ import _Feature, annotations
 
-from dataclasses import dataclass
-from typing import Callable
-
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntityDescription,
-    SensorStateClass,
-)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE, EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from custom_components.bosch_statistics.api import BoschHomeAppliance
 from custom_components.bosch_statistics.coordinator import BoschDataUpdateCoordinator
 from custom_components.bosch_statistics.dishwasher.sensor import (
+    BoschDishwasherEnergySensor,
     BoschDishwasherWaterSensor,
 )
 
@@ -23,29 +14,15 @@ from custom_components.bosch_statistics.dishwasher.sensor import (
 from .utils import _LOGGER
 
 
-@dataclass(frozen=True, kw_only=True)
-class BoschHomeApplianceSensorDescription(SensorEntityDescription):
-    """Class describing Fressnapf Tracker sensor entities."""
-
-    value_fn: Callable[[BoschHomeAppliance], int]
-
-
-SENSOR_ENTITY_DESCRIPTIONS: tuple[BoschHomeApplianceSensorDescription, ...] = (
-    BoschHomeApplianceSensorDescription(
-        key="battery",
-        state_class=SensorStateClass.MEASUREMENT,
-        device_class=SensorDeviceClass.BATTERY,
-        native_unit_of_measurement=PERCENTAGE,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data.ddfversion,
-    ),
-)
-
-
 def get_device_handlers(
     coordinator: BoschDataUpdateCoordinator,
 ):
-    return {"Dishwasher": [BoschDishwasherWaterSensor(coordinator)]}
+    return {
+        "Dishwasher": [
+            BoschDishwasherWaterSensor(coordinator),
+            BoschDishwasherEnergySensor(coordinator),
+        ]
+    }
 
 
 async def async_setup_entry(
@@ -80,7 +57,3 @@ async def async_setup_entry(
                 )
 
     async_add_entities(entities)
-
-    # appliances = coordinator.data or []
-
-    # async_add_entities(BoschHomeApplianceSensor(appliance) for appliance in appliances)
