@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from functools import cached_property
-from typing import Any, Callable
+from typing import Callable
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -103,6 +102,6 @@ class BoschHomeApplianceSensor(BoschHomeApplianceEntity, SensorEntity):
     ) -> None:
         super().__init__(coordinator, entity_description)
 
-    @cached_property
-    def native_value(self) -> Any:
-        return self.entity_description.value_fn(self.coordinator.device)
+    # @cached_property
+    # def native_value(self) -> Any:
+    #     return self.entity_description.value_fn(self.coordinator.device)
