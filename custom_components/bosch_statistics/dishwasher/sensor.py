@@ -21,13 +21,13 @@ class BoschHomeApplianceBaseEntity(CoordinatorEntity[BoschDataUpdateCoordinator]
         super().__init__(coordinator)
 
 
-class BoschHomeApplianceEntity:
+class BoschHomeApplianceEntity(BoschHomeApplianceBaseEntity):
     def __init__(
         self,
         coordinator: BoschDataUpdateCoordinator,
         feature_id: str,
     ) -> None:
-        # super().__init__(coordinator)
+        super().__init__(coordinator)
         self.coordinator = coordinator
         self._id = coordinator.device.ha_id
         self._attr_device_info = DeviceInfo(
