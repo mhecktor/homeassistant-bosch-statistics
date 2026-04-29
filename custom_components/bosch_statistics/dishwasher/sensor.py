@@ -57,14 +57,14 @@ def get_current_month_data(data: dict) -> dict | None:
     return max(
         months,
         key=lambda item: (
-            item["asspcoatedMonth"]["year"],
-            item["asspcoatedMonth"]["month"],
+            item["associatedMonth"]["year"],
+            item["associatedMonth"]["month"],
         ),
     )
 
 
 # class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
-class BoschDishwasherWaterSensor(BoschHomeApplianceEntity):
+class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
     """Sensor for dishwasher water usage."""
 
     _attr_icon = "mdi:water"
@@ -78,12 +78,34 @@ class BoschDishwasherWaterSensor(BoschHomeApplianceEntity):
     ) -> None:
         super().__init__(coordinator, feature_id="water_usage")
 
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _LOGGER.warning(
+            "Received update from coordinator with data: %s",
+            dir(self.coordinator.data),
+        )
+        # self._attr_is_on = self.coordinator.data[self.idx]["state"]
+        self.async_write_ha_state()
+
+    @cached_property
+    def native_value(self):
+        _LOGGER.warning(
+            "Called native_value for energy sensor with data", self.coordinator.data
+        )
+        month = get_current_month_data(self.coordinator.data)
+        if not month:
+            return None
+
+        ml = month["totalConsumption"]["waterConsumptionInMl"]
+        return round(ml / 1000, 3)
+
 
 class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
     """Sensor for dishwasher energy usage."""
 
     _attr_icon = "mdi:power-plug"
-    _attr_native_unit_of_measurement = UnitOfEnergy["WATT_HOUR"]
+    _attr_native_unit_of_measurement = UnitOfEnergy["KILO_WATT_HOUR"]
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_device_class = SensorDeviceClass.ENERGY
 
@@ -92,7 +114,6 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
         coordinator: BoschDataUpdateCoordinator,
     ) -> None:
         super().__init__(coordinator, feature_id="energy_consumption")
-        self.entity_id = f"{self.coordinator.device.ha_id}_energy_consumption"
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -114,4 +135,4 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
             return None
 
         wh = month["totalConsumption"]["energyConsumptionInWh"]
-        return wh
+        return round(wh / 1000, 3)
