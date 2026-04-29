@@ -155,6 +155,7 @@ class BoschApiClient:
 
         headers = kwargs.pop("headers", {})
         headers["Authorization"] = f"Bearer {self.entry.data[CONF_ACCESS_TOKEN]}"
+        headers["Accept-Language"] = "de"
         async with self.session.request("GET", url, headers=headers, **kwargs) as resp:
             if resp.status == 401:
                 await self.async_refresh_token()
