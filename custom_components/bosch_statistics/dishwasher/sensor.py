@@ -7,6 +7,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.components.sensor.const import SensorStateClass
 from homeassistant.const import UnitOfEnergy, UnitOfVolume
+from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from propcache.api import cached_property
@@ -92,6 +93,16 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
     ) -> None:
         super().__init__(coordinator, feature_id="energy_consumption")
         self.entity_id = f"{self.coordinator.device.ha_id}_energy_consumption"
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _LOGGER.warning(
+            "Received update from coordinator with data: %s",
+            dir(self.coordinator.data),
+        )
+        # self._attr_is_on = self.coordinator.data[self.idx]["state"]
+        self.async_write_ha_state()
 
     @cached_property
     def native_value(self):
