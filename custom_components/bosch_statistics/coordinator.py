@@ -1,4 +1,3 @@
-import json
 import logging
 from datetime import timedelta
 
@@ -31,7 +30,7 @@ class BoschDataUpdateCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             config_entry=config_entry,
             always_update=False,
-            update_interval=timedelta(seconds=30),
+            update_interval=timedelta(minutes=5),
         )
         self.device = device
         self.api = api
@@ -43,11 +42,6 @@ class BoschDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Fetch data from the API."""
         data = await self.api.async_fetch_statistics(self.device.ha_id)
-        _LOGGER.warn(
-            json.dumps(
-                {"fetching data for device": self.device.ha_id, "data": data}, indent=4
-            )
-        )
 
         return data
 

@@ -2,13 +2,31 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect Bosch Dishwasher",
-        "description": "Please enter your API credentials for {api_name}.",
+        "title": "Connect Bosch Appliance",
+        "description": "Enter your Bosch API credentials to set up the integration.",
+        "data": {
+          "base_url": "API Base URL",
+          "client_id": "Client ID",
+          "refresh_token": "Refresh Token"
+        },
+        "data_description": {
+          "base_url": "The base URL of the Bosch API (e.g. https://api.home-connect.com)",
+          "client_id": "Your OAuth2 client ID",
+          "refresh_token": "Your OAuth2 refresh token used to obtain access tokens"
+        }
       },
       "token": {
-        "title": "Token Authentication",
-        "description": "Token successfully fetched",
-        },
+        "title": "Verifying Credentials",
+        "description": "Validating your credentials by fetching an access token. Please wait."
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the Bosch API. Check your API Base URL and try again.",
+      "invalid_auth": "Authentication failed. Check your Client ID and Refresh Token.",
+      "unknown": "An unexpected error occurred. Please check your configuration and try again."
+    },
+    "abort": {
+      "already_configured": "This Bosch account is already configured."
     }
   }
 }
