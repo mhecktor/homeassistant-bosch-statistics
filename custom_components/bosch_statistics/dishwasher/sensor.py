@@ -5,6 +5,7 @@ from homeassistant.components.sensor.const import SensorStateClass
 from homeassistant.const import UnitOfEnergy, UnitOfVolume
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from propcache.api import cached_property
 
 from custom_components.bosch_statistics.coordinator import BoschDataUpdateCoordinator
 
@@ -40,6 +41,21 @@ class BoschHomeApplianceEntity(BoschHomeApplianceBaseEntity):
         self._attr_unique_id = f"{self._id}_{feature_id}"
 
 
+def get_current_month_data(data: dict) -> dict | None:
+    months: list[dict[str, Any]] = data.get("applianceConsumptionData", [])
+
+    if not months:
+        return None
+
+    return max(
+        months,
+        key=lambda item: (
+            item["asspcoatedMonth"]["year"],
+            item["asspcoatedMonth"]["month"],
+        ),
+    )
+
+
 # class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
 class BoschDishwasherWaterSensor(BoschHomeApplianceEntity):
     """Sensor for dishwasher water usage."""
@@ -69,3 +85,12 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity):
         coordinator: BoschDataUpdateCoordinator,
     ) -> None:
         super().__init__(coordinator, feature_id="energy_consumption")
+
+    @cached_property
+    def native_value(self):
+        month = get_current_month_data(self.coordinator.data)
+        if not month:
+            return None
+
+        wh = month["totalConsumption"]["energyConsumptionInWh"]
+        return wh

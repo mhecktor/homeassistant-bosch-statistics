@@ -5,6 +5,7 @@ from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from typings import Any
 
 from .api import BoschApiClient, BoschHomeAppliance
 from .const import DOMAIN
@@ -12,6 +13,21 @@ from .const import DOMAIN
 __all__ = ["BoschDataUpdateCoordinator"]
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def get_current_month_data(data: dict) -> dict | None:
+    months: list[dict[str, Any]] = data.get("applianceConsumptionData", [])
+
+    if not months:
+        return None
+
+    return max(
+        months,
+        key=lambda item: (
+            item["asspcoatedMonth"]["year"],
+            item["asspcoatedMonth"]["month"],
+        ),
+    )
 
 
 class BoschDataUpdateCoordinator(DataUpdateCoordinator):
