@@ -145,7 +145,11 @@ class BoschApiClient:
     async def async_get_status(self) -> dict[str, Any]:
         return await self.async_request("GET", "/api/status")
 
-    async def async_fetch_statistics(self, ha_id) -> dict[str, Any]:
+    async def async_fetch_statistics(
+        self,
+        ha_id,
+        **kwargs: Any,
+    ) -> dict[str, Any]:
         url = f"https://eu.services.home-connect.com/appliance-usage-statistics-webapp/private/api/appliances/{ha_id}/statistics"
         await self.async_ensure_token_valid()
 
@@ -159,7 +163,7 @@ class BoschApiClient:
                 )
 
                 async with self.session.request(
-                    method, url, headers=headers, **kwargs
+                    "GET", url, headers=headers, **kwargs
                 ) as retry_resp:
                     retry_resp.raise_for_status()
                     return await retry_resp.json()

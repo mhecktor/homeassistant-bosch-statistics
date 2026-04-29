@@ -1,6 +1,5 @@
 from homeassistant.components.sensor import (
     SensorDeviceClass,
-    SensorEntity,
 )
 from homeassistant.components.sensor.const import SensorStateClass
 from homeassistant.const import UnitOfEnergy, UnitOfVolume
@@ -41,7 +40,8 @@ class BoschHomeApplianceEntity(BoschHomeApplianceBaseEntity):
         self._attr_unique_id = f"{self._id}_{feature_id}"
 
 
-class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
+# class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
+class BoschDishwasherWaterSensor(BoschHomeApplianceEntity):
     """Sensor for dishwasher water usage."""
 
     _attr_icon = "mdi:water"
@@ -56,7 +56,7 @@ class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
         super().__init__(coordinator, feature_id="water_usage")
 
 
-class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
+class BoschDishwasherEnergySensor(BoschHomeApplianceEntity):
     """Sensor for dishwasher energy usage."""
 
     _attr_icon = "mdi:power-plug"
