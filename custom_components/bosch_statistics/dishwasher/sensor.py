@@ -1,7 +1,9 @@
+import logging
 from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
+    SensorEntity,
 )
 from homeassistant.components.sensor.const import SensorStateClass
 from homeassistant.const import UnitOfEnergy, UnitOfVolume
@@ -14,6 +16,8 @@ from custom_components.bosch_statistics.coordinator import BoschDataUpdateCoordi
 from ..const import DOMAIN
 
 __all__ = ["BoschDishwasherWaterSensor", "BoschDishwasherEnergySensor"]
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class BoschHomeApplianceBaseEntity(CoordinatorEntity[BoschDataUpdateCoordinator]):
@@ -74,7 +78,7 @@ class BoschDishwasherWaterSensor(BoschHomeApplianceEntity):
         super().__init__(coordinator, feature_id="water_usage")
 
 
-class BoschDishwasherEnergySensor(BoschHomeApplianceEntity):
+class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
     """Sensor for dishwasher energy usage."""
 
     _attr_icon = "mdi:power-plug"
@@ -87,9 +91,13 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity):
         coordinator: BoschDataUpdateCoordinator,
     ) -> None:
         super().__init__(coordinator, feature_id="energy_consumption")
+        self.entity_id = f"{self.coordinator.device.ha_id}_energy_consumption"
 
     @cached_property
     def native_value(self):
+        _LOGGER.warning(
+            "Called native_value for energy sensor with data", self.coordinator.data
+        )
         month = get_current_month_data(self.coordinator.data)
         if not month:
             return None
