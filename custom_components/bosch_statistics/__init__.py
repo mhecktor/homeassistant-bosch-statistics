@@ -49,14 +49,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry.runtime_data = coordinators
 
-    coordinator = DataUpdateCoordinator(
-        hass,
-        logger=_LOGGER,
-        name=DOMAIN,
-        # update_method=async_update_data,
-        update_method=api.async_get_home_appliances,
-        update_interval=timedelta(minutes=5),
-    )
+    # coordinator = DataUpdateCoordinator(
+    #     hass,
+    #     logger=_LOGGER,
+    #     name=DOMAIN,
+    #     # update_method=async_update_data,
+    #     update_method=api.async_get_home_appliances,
+    #     update_interval=timedelta(minutes=5),
+    # )
 
     # await coordinator.async_config_entry_first_refresh()
 

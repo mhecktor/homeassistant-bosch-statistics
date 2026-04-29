@@ -46,7 +46,7 @@ class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
 
     _attr_icon = "mdi:water"
     _attr_native_unit_of_measurement = UnitOfVolume["LITERS"]
-    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_device_class = SensorDeviceClass.WATER
 
     def __init__(
@@ -61,7 +61,7 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
 
     _attr_icon = "mdi:power-plug"
     _attr_native_unit_of_measurement = UnitOfEnergy["WATT_HOUR"]
-    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_device_class = SensorDeviceClass.ENERGY
 
     def __init__(
