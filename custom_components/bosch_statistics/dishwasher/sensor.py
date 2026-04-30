@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -8,44 +9,15 @@ from homeassistant.components.sensor import (
 from homeassistant.components.sensor.const import SensorStateClass
 from homeassistant.const import UnitOfEnergy, UnitOfVolume
 from homeassistant.core import callback
-from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.typing import StateType
 from propcache.api import cached_property
 
 from custom_components.bosch_statistics.coordinator import BoschDataUpdateCoordinator
-
-from ..const import DOMAIN
+from custom_components.bosch_statistics.entity import BoschHomeApplianceEntity
 
 __all__ = ["BoschDishwasherWaterSensor", "BoschDishwasherEnergySensor"]
 
 _LOGGER = logging.getLogger(__name__)
-
-
-class BoschHomeApplianceBaseEntity(CoordinatorEntity[BoschDataUpdateCoordinator]):
-    _attr_has_entity_name = True
-
-    def __init__(self, coordinator: BoschDataUpdateCoordinator) -> None:
-        super().__init__(coordinator)
-
-
-class BoschHomeApplianceEntity(BoschHomeApplianceBaseEntity):
-    def __init__(
-        self,
-        coordinator: BoschDataUpdateCoordinator,
-        feature_id: str,
-    ) -> None:
-        super().__init__(coordinator)
-        self.coordinator = coordinator
-        self._id = coordinator.device.ha_id
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, self._id)},
-            name=str(coordinator.device.name),
-            manufacturer=str(coordinator.device.brand),
-            model=str(coordinator.device.vib),
-            serial_number=str(coordinator.device.serialnumber),
-        )
-        self.feature_id = feature_id
-        self._attr_unique_id = f"{self._id}_{feature_id}"
 
 
 def get_current_month_data(data: dict) -> dict | None:
@@ -82,7 +54,7 @@ class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         _LOGGER.warning(
-            "Received update from coordinator with data: %s",
+            "Received update from water coordinator with data: %s",
             dir(self.coordinator.data),
         )
         # self._attr_is_on = self.coordinator.data[self.idx]["state"]
@@ -91,7 +63,7 @@ class BoschDishwasherWaterSensor(BoschHomeApplianceEntity, SensorEntity):
     @cached_property
     def native_value(self):
         _LOGGER.warning(
-            "Called native_value for energy sensor with data", self.coordinator.data
+            "Called native_value for water sensor with data", self.coordinator.data
         )
         month = get_current_month_data(self.coordinator.data)
         if not month:
@@ -115,18 +87,19 @@ class BoschDishwasherEnergySensor(BoschHomeApplianceEntity, SensorEntity):
     ) -> None:
         super().__init__(coordinator, feature_id="energy_consumption")
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        _LOGGER.warning(
-            "Received update from coordinator with data: %s",
-            dir(self.coordinator.data),
-        )
-        # self._attr_is_on = self.coordinator.data[self.idx]["state"]
-        self.async_write_ha_state()
+    # @callback
+    # def _handle_coordinator_update(self) -> None:
+    #     """Handle updated data from the coordinator."""
+    #     _LOGGER.warning(
+    #         "Received update from coordinator with data: %s",
+    #         dir(self.coordinator.data),
+    #     )
+    #
+    #     # self._attr_is_on = self.coordinator.data[self.idx]["state"]
+    #     self.async_write_ha_state()
 
-    @cached_property
-    def native_value(self):
+    @property
+    def native_value(self) -> StateType | Decimal:
         _LOGGER.warning(
             "Called native_value for energy sensor with data", self.coordinator.data
         )

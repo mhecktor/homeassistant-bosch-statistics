@@ -41,6 +41,11 @@ class BoschDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Fetch data from the API."""
+        _LOGGER.warning(
+            "Fetching data for device %s with ID %s",
+            self.device.name,
+            self.device.ha_id,
+        )
         data = await self.api.async_fetch_statistics(self.device.ha_id)
 
         return data
