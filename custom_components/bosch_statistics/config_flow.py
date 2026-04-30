@@ -7,6 +7,7 @@ from typing import Any
 import aiohttp
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.core import callback
 
 from .const import (
     CONF_ACCESS_TOKEN,
@@ -21,7 +22,7 @@ from .utils import CannotConnect, InvalidAuth, async_refresh_token
 _LOGGER = logging.getLogger(__name__)
 
 
-class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class BoschStatisticsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     def __init__(self) -> None:
@@ -108,3 +109,10 @@ class MyRestApiConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
         )
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        return BoschStatisticsOptionsFlow(config_entry)

@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -24,6 +25,12 @@ class BoschDataUpdateCoordinator(DataUpdateCoordinator):
         api: BoschApiClient,
     ):
         """Initialize the coordinator."""
+        _LOGGER.warning(
+            "Initializing BoschDataUpdateCoordinator for device %s with ID %s on the interface %s",
+            device.name,
+            device.ha_id,
+            config_entry.options[CONF_SCAN_INTERVAL],
+        )
         super().__init__(
             hass,
             _LOGGER,
