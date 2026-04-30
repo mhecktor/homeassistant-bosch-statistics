@@ -1,0 +1,392 @@
+{
+    "totalProgramCount": 112,
+    "applianceConsumptionData": [
+        {
+            "programConsumption": [],
+            "totalConsumption": {
+                "numberOfProgramRuns": 0,
+                "energyConsumptionInWh": 0,
+                "waterConsumptionInMl": 0
+            },
+            "associatedMonth": {
+                "month": 3,
+                "year": 2025
+            }
+        },
+        {
+            "programConsumption": [],
+            "totalConsumption": {
+                "numberOfProgramRuns": 0,
+                "energyConsumptionInWh": 0,
+                "waterConsumptionInMl": 0
+            },
+            "associatedMonth": {
+                "month": 4,
+                "year": 2025
+            }
+        },
+        {
+            "programConsumption": [],
+            "totalConsumption": {
+                "numberOfProgramRuns": 0,
+                "energyConsumptionInWh": 0,
+                "waterConsumptionInMl": 0
+            },
+            "associatedMonth": {
+                "month": 5,
+                "year": 2025
+            }
+        },
+        {
+            "programConsumption": [],
+            "totalConsumption": {
+                "numberOfProgramRuns": 0,
+                "energyConsumptionInWh": 0,
+                "waterConsumptionInMl": 0
+            },
+            "associatedMonth": {
+                "month": 6,
+                "year": 2025
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 7,
+                "year": 2025
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 3,
+                    "energyConsumptionInWh": 2700,
+                    "waterConsumptionInMl": 27000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 3,
+                "energyConsumptionInWh": 2700,
+                "waterConsumptionInMl": 27000
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 8,
+                "year": 2025
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 3,
+                    "energyConsumptionInWh": 2700,
+                    "waterConsumptionInMl": 27000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 950,
+                    "waterConsumptionInMl": 10500,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 1250,
+                    "waterConsumptionInMl": 13500,
+                    "programName": "Intensiv 70°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_IN_0_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 1050,
+                    "waterConsumptionInMl": 10500,
+                    "programName": "Leise 50°C",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_NAPR_1_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 6,
+                "energyConsumptionInWh": 5950,
+                "waterConsumptionInMl": 61500
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 9,
+                "year": 2025
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 8,
+                    "energyConsumptionInWh": 7600,
+                    "waterConsumptionInMl": 84000,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 7,
+                    "energyConsumptionInWh": 6300,
+                    "waterConsumptionInMl": 63000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 1050,
+                    "waterConsumptionInMl": 11500,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": [
+                        "SpeedPerfect+"
+                    ]
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 1250,
+                    "waterConsumptionInMl": 13500,
+                    "programName": "Intensiv 70°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_IN_0_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 17,
+                "energyConsumptionInWh": 16200,
+                "waterConsumptionInMl": 172000
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 10,
+                "year": 2025
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 8,
+                    "energyConsumptionInWh": 7200,
+                    "waterConsumptionInMl": 72000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 4,
+                    "energyConsumptionInWh": 3800,
+                    "waterConsumptionInMl": 42000,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 12,
+                "energyConsumptionInWh": 11000,
+                "waterConsumptionInMl": 114000
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 11,
+                "year": 2025
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 8,
+                    "energyConsumptionInWh": 7600,
+                    "waterConsumptionInMl": 84000,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 7,
+                    "energyConsumptionInWh": 6300,
+                    "waterConsumptionInMl": 63000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 950,
+                    "waterConsumptionInMl": 11000,
+                    "programName": "Express 60°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_KU_1_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 16,
+                "energyConsumptionInWh": 14850,
+                "waterConsumptionInMl": 158000
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 0,
+                "year": 2026
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 4,
+                    "energyConsumptionInWh": 3800,
+                    "waterConsumptionInMl": 42000,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 3,
+                    "energyConsumptionInWh": 3750,
+                    "waterConsumptionInMl": 40500,
+                    "programName": "Intensiv 70°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_IN_0_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 900,
+                    "waterConsumptionInMl": 9000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 8,
+                "energyConsumptionInWh": 8450,
+                "waterConsumptionInMl": 91500
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 1,
+                "year": 2026
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 5,
+                    "energyConsumptionInWh": 4750,
+                    "waterConsumptionInMl": 52500,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 4,
+                    "energyConsumptionInWh": 3600,
+                    "waterConsumptionInMl": 36000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 2,
+                    "energyConsumptionInWh": 2500,
+                    "waterConsumptionInMl": 27000,
+                    "programName": "Intensiv 70°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_IN_0_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 11,
+                "energyConsumptionInWh": 10850,
+                "waterConsumptionInMl": 115500
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 2,
+                "year": 2026
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 7,
+                    "energyConsumptionInWh": 6300,
+                    "waterConsumptionInMl": 63000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 3,
+                    "energyConsumptionInWh": 2850,
+                    "waterConsumptionInMl": 31500,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 2,
+                    "energyConsumptionInWh": 2500,
+                    "waterConsumptionInMl": 27000,
+                    "programName": "Intensiv 70°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_IN_0_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 12,
+                "energyConsumptionInWh": 11650,
+                "waterConsumptionInMl": 121500
+            }
+        },
+        {
+            "associatedMonth": {
+                "month": 3,
+                "year": 2026
+            },
+            "programConsumption": [
+                {
+                    "numberOfProgramRuns": 5,
+                    "energyConsumptionInWh": 4750,
+                    "waterConsumptionInMl": 52500,
+                    "programName": "Auto 45-65°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/AUTO_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 3,
+                    "energyConsumptionInWh": 2700,
+                    "waterConsumptionInMl": 27000,
+                    "programName": "Eco 50°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/EC_Bosch_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 3,
+                    "energyConsumptionInWh": 3750,
+                    "waterConsumptionInMl": 40500,
+                    "programName": "Intensiv 70°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_IN_0_.png",
+                    "optionNames": []
+                },
+                {
+                    "numberOfProgramRuns": 1,
+                    "energyConsumptionInWh": 950,
+                    "waterConsumptionInMl": 11000,
+                    "programName": "Express 60°",
+                    "programIcon": "https://media3.bsh-group.com/Feature_Icons/54x54/BO_KU_1_.png",
+                    "optionNames": []
+                }
+            ],
+            "totalConsumption": {
+                "numberOfProgramRuns": 12,
+                "energyConsumptionInWh": 10,
+                "waterConsumptionInMl": 30
+            }
+        }
+    ],
+    "unitPreference": "Metric",
+    "isSuperUser": true,
+    "isDemoAppliance": false,
+    "dataCollectionChoice": "CollectData"
+}

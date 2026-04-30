@@ -29,7 +29,7 @@ class BoschDataUpdateCoordinator(DataUpdateCoordinator):
             "Initializing BoschDataUpdateCoordinator for device %s with ID %s on the interface %s",
             device.name,
             device.ha_id,
-            config_entry.options[CONF_SCAN_INTERVAL],
+            config_entry.options.get(CONF_SCAN_INTERVAL, 30),
         )
         super().__init__(
             hass,
@@ -37,7 +37,9 @@ class BoschDataUpdateCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             config_entry=config_entry,
             always_update=False,
-            update_interval=timedelta(minutes=5),
+            update_interval=timedelta(
+                seconds=config_entry.options.get(CONF_SCAN_INTERVAL, 30)
+            ),
         )
         self.device = device
         self.api = api

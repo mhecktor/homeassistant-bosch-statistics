@@ -150,7 +150,9 @@ class BoschApiClient:
         ha_id,
         **kwargs: Any,
     ) -> dict[str, Any]:
+
         url = f"https://eu.services.home-connect.com/appliance-usage-statistics-webapp/private/api/appliances/{ha_id}/statistics"
+        # url = "http://host.docker.internal:3000/stats"
         await self.async_ensure_token_valid()
 
         headers = kwargs.pop("headers", {})

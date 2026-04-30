@@ -1,37 +1,64 @@
 from typing import Any, Dict, Mapping, cast
-
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
+from .const import CONF_SCAN_INTERVAL
 from homeassistant import config_entries
-from homeassistant.const import CONF_SCAN_INTERVAL
+from datetime import timedelta
+
+__all__ = ["BoschStatisticsOptionsFlow"]
+
+DURATION_REGEX = r"^\d{2}:\d{2}:\d{2}$"
 
 
-class OptionsFlowHandler(config_entries.OptionsFlow):
+def _parse_timedelta(value: str) -> timedelta:
+    parts = value.split(":")
+    if len(parts) != 3:
+        raise ValueError("Invalid format")
+
+    hours, minutes, seconds = parts
+
+    try:
+        hours = int(hours)
+        minutes = int(minutes)
+        seconds = int(seconds)
+    except ValueError:
+        raise ValueError("Not integers")
+
+    if minutes < 0 or minutes >= 60 or seconds < 0 or seconds >= 60:
+        raise ValueError("Invalid range")
+
+    return timedelta(hours=hours, minutes=minutes, seconds=seconds)
+
+
+class BoschStatisticsOptionsFlow(config_entries.OptionsFlow):
     """Handle options flow for Bosch Statistics integration."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        self.config_entry = config_entry
-
     async def async_step_init(
-        self, user_input: Dict[str, Any] | None = None
+        self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
         """Manage the options for the custom component."""
-        errors: Dict[str, str] = {}
+        errors: dict[str, str] = {}
 
         if user_input is not None:
-            if not errors:
-                # Process the user input and update the config entry
+            duration_str = user_input[CONF_SCAN_INTERVAL]
+            try:
+                parsed = _parse_timedelta(duration_str)
                 return self.async_create_entry(
-                    title="Bosch Statistics Options",
-                    data=cast(
-                        Mapping, {CONF_SCAN_INTERVAL, user_input[CONF_SCAN_INTERVAL]}
-                    ),
+                    data={CONF_SCAN_INTERVAL: parsed.total_seconds()},
                 )
+            except ValueError:
+                errors[CONF_SCAN_INTERVAL] = "invalid_scan_interval"
+
+        current_seconds = self.config_entry.options.get(CONF_SCAN_INTERVAL, 300)
+        current_str = str(timedelta(seconds=current_seconds))[:8].zfill(
+            8
+        )  # e.g. "00:05:00"
 
         options_schema = vol.Schema(
             {
-                vol.Optional("scan_interval", default="5 minutes"): str,
-                # Define your options schema here
-                # Example: vol.Optional("option_name", default="default_value"): str,
+                vol.Optional(
+                    CONF_SCAN_INTERVAL, default=current_str
+                ): str,  # ✅ serializable — cv.time_period_str was not
             }
         )
 

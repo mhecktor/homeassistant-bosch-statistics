@@ -18,6 +18,7 @@ from .const import (
     DOMAIN,
 )
 from .utils import CannotConnect, InvalidAuth, async_refresh_token
+from .options_flow import BoschStatisticsOptionsFlow
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -115,4 +116,5 @@ class BoschStatisticsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
     ) -> config_entries.OptionsFlow:
-        return BoschStatisticsOptionsFlow(config_entry)
+        """Get the options flow for this handler."""
+        return BoschStatisticsOptionsFlow()
